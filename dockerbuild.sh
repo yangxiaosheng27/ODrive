@@ -1,4 +1,8 @@
 #!/usr/bin/env bash
+
+script_path=$(realpath "$0")
+script_dir=$(dirname "$script_path")
+
 function cleanup {
     echo "Removing previous build artifacts"
     rm -rf build/ Firmware/autogen Firmware/build Firmware/.tup
@@ -15,10 +19,10 @@ function build {
     cleanup
 
     echo "Building the build-environment image"
-    docker build -t odrive-build-img .
+    docker build -t odrive-build-img $script_dir
 
     echo "Build in container"
-    docker run -it -v $(pwd):/ODrive --name odrive-build-cont --user $(id -u)  odrive-build-img:latest 
+    docker run -it -v $script_dir:/ODrive --name odrive-build-cont odrive-build-img:latest 
 }
 
 function usage {
