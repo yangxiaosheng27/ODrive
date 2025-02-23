@@ -1,0 +1,13 @@
+# 设置目标系统为裸机（无操作系统）
+set(CMAKE_SYSTEM_NAME Generic)
+set(CMAKE_SYSTEM_PROCESSOR arm)
+
+# 指定交叉编译器路径（根据实际路径调整）
+set(TOOLCHAIN_PREFIX arm-none-eabi-)
+set(CMAKE_C_COMPILER ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_CXX_COMPILER ${TOOLCHAIN_PREFIX}g++)
+set(CMAKE_ASM_COMPILER ${TOOLCHAIN_PREFIX}gcc)
+set(CMAKE_LINKER ${TOOLCHAIN_PREFIX}g++)
+
+# 禁止编译器自检（避免 CMake 尝试使用主机库）
+set(CMAKE_TRY_COMPILE_TARGET_TYPE STATIC_LIBRARY)
