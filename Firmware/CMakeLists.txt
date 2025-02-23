@@ -19,8 +19,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
 project(XDrive)
 
 # 设置宏定义
-add_definitions(-DUSE_HAL_DRIVER)
-add_definitions(-DFIBRE_ENABLE_SERVER)
+add_definitions(-DFIBRE_ENABLE_SERVER) # todo
 
 # 设置C编译选项
 set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -D__weak=\"__attribute__((weak))\"")
@@ -68,26 +67,29 @@ set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--undefined=uxTopUsedP
 # 指定输出目录
 if(CMAKE_CONFIGURATION_TYPES)
     foreach(config IN LISTS CMAKE_CONFIGURATION_TYPES)
-        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${config} "${PROJECT_SOURCE_DIR}/build_cmake/${config}/bin")
-        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${config} "${PROJECT_SOURCE_DIR}/build_cmake/${config}/lib")
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config} "${PROJECT_SOURCE_DIR}/build_cmake/${config}/lib")
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY_${config} "${PROJECT_SOURCE_DIR}/build/${config}/bin")
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY_${config} "${PROJECT_SOURCE_DIR}/build/${config}/lib")
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config} "${PROJECT_SOURCE_DIR}/build/${config}/lib")
     endforeach()
 else()
     if(CMAKE_BUILD_TYPE STREQUAL "Debug")
-        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build_cmake/debug/bin)
-        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build_cmake/debug/lib)
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build_cmake/debug/lib)
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/debug/bin)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/debug/lib)
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/debug/lib)
     elseif(CMAKE_BUILD_TYPE STREQUAL "Release")
-        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build_cmake/release/bin)
-        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build_cmake/release/lib)
-        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build_cmake/release/lib)
+        set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/release/bin)
+        set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/release/lib)
+        set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/build/release/lib)
     else()
         message(WARNING "Unknown build type: ${CMAKE_BUILD_TYPE}")
     endif()
 endif()
 
 # 添加子目录（库模块）
+add_subdirectory(ThirdParty/CMSIS)
+add_subdirectory(ThirdParty/FreeRTOS)
 add_subdirectory(ThirdParty/STM32F4xx_HAL_Driver)
+add_subdirectory(ThirdParty/STM32_USB_Device_Library)
 
 # 包含头文件目录
 #include_directories(${PROJECT_SOURCE_DIR}/include)

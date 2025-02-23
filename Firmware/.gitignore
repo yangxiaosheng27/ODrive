@@ -2,8 +2,7 @@
 #build folder
 #autogen/
 build/
-build2/
-build_cmake/
+build_old/
 deploy/
 .dep/
 tup_build.sh
