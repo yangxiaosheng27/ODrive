@@ -1,49 +1,46 @@
 #!/usr/bin/env bash
 
-script_path=$(realpath "$0")
-script_dir=$(dirname "$script_path")
+#script_path=$(realpath "$0")
+#script_dir=$(dirname "$script_path")
 
-function cleanup {
-    echo "Removing previous build artifacts"
-    rm -rf build/ Firmware/autogen Firmware/build Firmware/.tup
-    docker rm odrive-build-cont
-}
-
-function gc {
-    cleanup
-    docker rmi odrive-build-img
-    docker image prune
+function clean {
+    #rm -rf build/ Firmware/build Firmware/.tup
+    docker rm odrive-yxs
+    docker rmi odrive-yxs-img
+    #docker image prune
 }
 
 function build {
-    cleanup
+    clean
 
     echo "Building the build-environment image"
-    docker build -t odrive-build-img $script_dir
-
-    echo "Build in container"
-    docker run -it -v $script_dir:/ODrive --name odrive-build-cont odrive-build-img:latest 
+    docker build -t odrive-yxs-img .
 }
 
-function usage {
-    echo "usage: $0 (build | cleanup | gc)"
+function run {
+    echo "Run the container"
+    docker run -it -v .:/ODrive --name odrive-yxs -p 2222:22 odrive-yxs-img:latest
+}
+
+function help {
+    echo "usage: $0 (build | run | rm | clean)"
     echo
-    echo "build   -- build in docker and extract the artifacts."
-    echo "cleanup -- remove build artifacts from previous build"
-    echo "gc      -- remove all build images and containers"
+    echo "clean     -- remove build artifacts, all build images and containers"
+    echo "build     -- build in docker and extract the artifacts."
+    echo "run       -- run the container."
 }
 
 case $1 in
+    clean)
+    clean
+    ;;
     build)
-	build
-	;;
-    cleanup)
-	cleanup
-	;;
-    gc)
-	gc
-	;;
+    build
+    ;;
+    run)
+    run
+    ;;
     *)
-	usage
-	;;
+    help
+    ;;
 esac

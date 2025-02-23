@@ -1,21 +1,30 @@
-FROM ubuntu:bionic
+FROM ubuntu:22.04
 
-RUN ln -sf /bin/bash /bin/sh
+SHELL ["/bin/bash", "-c"]
 
 RUN set -x && \
     sed -i 's/archive.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
     sed -i 's/security.ubuntu.com/mirrors.aliyun.com/g' /etc/apt/sources.list && \
-    apt-get update && \
-    apt-get -y install software-properties-common && \
-    add-apt-repository ppa:team-gcc-arm-embedded/ppa && \
-    add-apt-repository ppa:jonathonf/tup && \
-    apt-get update && \
-    apt-get -y upgrade && \
-    apt-get -y install gcc-arm-embedded openocd tup python3.7 python3-yaml python3-jinja2 python3-jsonschema build-essential git time && \
-    ln -s /usr/bin/python3.7 /usr/bin/python && \
-    mkdir -p ODrive && \
-    git config --global --add safe.directory /ODrive
+    apt-get update
 
-WORKDIR ODrive/Firmware
+# 配置ssh
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN sed -i 's/#PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config
+COPY id_rsa.pub /root/.ssh/authorized_keys
+RUN chmod 700 /root/.ssh && chmod 600 /root/.ssh/authorized_keys
+EXPOSE 22
 
-CMD ["/bin/bash"]
+# 配置开发环境
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get -y install gcc-arm-none-eabi
+RUN apt-get -y install openocd
+RUN apt-get -y install build-essential
+RUN apt-get -y install cmake
+
+# 指定路径
+RUN mkdir -p /ODrive && mkdir -p /ODrive/Firmware
+WORKDIR /ODrive/Firmware
+
+# 使用 ENTRYPOINT 启动 SSH 并切换
+ENTRYPOINT ["/bin/sh", "-c", "/usr/sbin/sshd -D & cd /ODrive/Firmware && exec bash"]
