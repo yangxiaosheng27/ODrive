@@ -4,37 +4,41 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "build",
+            "label": "openocd test",
             "type": "shell",
-            "command": "make",
+            "command": "openocd",
+            "args": [
+                "-f", "openocd.cfg",
+                "-c", "init",
+                "-c", "exit"
+            ],
+            "problemMatcher": [],
             "group": {
                 "kind": "build",
-                "isDefault": true
             },
-            "presentation": {
-                "panel": "new"
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
+        },
+        {
+            "label": "openocd download",
+            "type": "shell",
+            "command": "openocd",
+            "args": [
+                "-f", "openocd.cfg",
+                "-c", "init",
+                "-c", "reset halt",
+                "-c", "flash write_image erase build_old/ODriveFirmware.elf",
+                "-c", "reset run",
+                "-c", "exit"
+            ],
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
             },
-            "problemMatcher": [
-                "$gcc"
-            ]
+            "options": {
+                "cwd": "${workspaceFolder}"
+            }
         },
-        {
-            "label": "flash - ST-Link",
-            "type": "shell",
-            "command": "make flash",
-            "problemMatcher": []
-        },
-        {
-            "label": "flash - Black Magic Probe",
-            "type": "shell",
-            "command": "make flashbmp",
-            "problemMatcher": []
-        },
-        {
-            "label": "openocd",
-            "type": "shell",
-            "command": "openocd -f \"interface/stlink-v2.cfg\" -f \"target/stm32f4x_stlink.cfg\" -c \"gdb_port 3333; log_output openocd.log\"",
-            "problemMatcher": []
-        }
     ]
 }
