@@ -51,6 +51,7 @@ target_sources(board_lib PRIVATE
     #${PROJECT_SOURCE_DIR}/ThirdParty/FreeRTOS/Source/portable/GCC/ARM_CM4F/port.c
     #${PROJECT_SOURCE_DIR}/Drivers/DRV8301/drv8301.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/startup_stm32f405xx.s
+    ${CMAKE_CURRENT_SOURCE_DIR}/board.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/stm32f4xx_hal_timebase_TIM.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/tim.c
     ${CMAKE_CURRENT_SOURCE_DIR}/Src/dma.c
