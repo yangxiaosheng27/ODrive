@@ -29,6 +29,7 @@ target_link_libraries(board_lib PRIVATE
     stm32f4xx_hal_interface
     freertos_interface
     stm32_usb_device_interface
+    fibre_interface
 )
 
 # 设置宏定义
@@ -41,6 +42,7 @@ target_compile_definitions(board_lib PRIVATE
 # 设置头文件目录
 target_include_directories(board_lib PRIVATE
     ${CMAKE_CURRENT_SOURCE_DIR}/Inc
+    ${PROJECT_SOURCE_DIR}/MotorControl
 )
 
 # 标记汇编文件
