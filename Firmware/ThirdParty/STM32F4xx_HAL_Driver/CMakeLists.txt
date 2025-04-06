@@ -18,7 +18,6 @@ target_link_libraries(stm32f4xx_hal_lib PRIVATE
 
 # 设置头文件目录
 target_include_directories(stm32f4xx_hal_lib PRIVATE
-    ${PROJECT_SOURCE_DIR}/Board/v3/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Inc
 )
 

@@ -4,7 +4,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "openocd test",
+            "label": "openocd test connection",
             "type": "shell",
             "command": "openocd",
             "args": [
@@ -13,12 +13,9 @@
                 "-c", "exit"
             ],
             "problemMatcher": [],
-            "group": {
-                "kind": "build",
-            },
             "options": {
                 "cwd": "${workspaceFolder}"
-            }
+            },
         },
         {
             "label": "openocd download",
@@ -28,17 +25,110 @@
                 "-f", "openocd.cfg",
                 "-c", "init",
                 "-c", "reset halt",
-                "-c", "flash write_image erase build_old/ODriveFirmware.elf",
+                "-c", "flash write_image erase build_old_yxs/ODriveFirmware.elf",
                 "-c", "reset run",
                 "-c", "exit"
             ],
             "problemMatcher": [],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn":[
+                "openocd test connection",
+            ],
             "group": {
                 "kind": "build",
             },
+        },
+        {
+            "label": "build_old_yxs",
+            "type": "shell",
+            "command": "./build_old_yxs.sh",
             "options": {
                 "cwd": "${workspaceFolder}"
-            }
+            },
+            "group": {
+                "kind": "build",
+            },
+        },
+        {
+            "label": "rm build",
+            "type": "shell",
+            "command": "[ -d build ] && rm -rf build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+        },
+        {
+            "label": "mkdir build",
+            "type": "shell",
+            "command": "mkdir -p build",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+        },
+        {
+            "label": "clear build_task_log.txt",
+            "type": "shell",
+            "command": ">> build/build_task_log.txt",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+        },
+        {
+            "label": "cmake config",
+            "type": "shell",
+            "command": "cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_EXPORT_COMPILE_COMMANDS=ON --no-warn-unused-cli -G \"Unix Makefiles\" -S . -B ./build 2>&1 | tee -a build/build_task_log.txt",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+        },
+        {
+            "label": "cmake build",
+            "type": "shell",
+            "command": "cmake --build build --config Debug --target all -j 14 2>&1 | tee -a build/build_task_log.txt",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "dependsOn":[
+                "cmake",
+            ],
+        },
+        {
+            "label": "build",
+            "type": "shell",
+            "command": "echo build done!",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+            },
+            "dependsOrder": "sequence",
+            "dependsOn":[
+                "clear build_task_log.txt",
+                "cmake config",
+                "cmake build",
+            ],
+        },
+        {
+            "label": "rebuild",
+            "type": "shell",
+            "command": "echo rebuild done!",
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "group": {
+                "kind": "build",
+            },
+            "dependsOrder": "sequence",
+            "dependsOn":[
+                "rm build",
+                "mkdir build",
+                "clear build_task_log.txt",
+                "cmake config",
+                "cmake build",
+            ],
         },
     ]
 }

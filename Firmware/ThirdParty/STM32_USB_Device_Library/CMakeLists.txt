@@ -1,3 +1,14 @@
+# 接口库
+add_library(stm32_usb_device_interface INTERFACE)
+
+# 设置头文件目录
+target_include_directories(stm32_usb_device_interface INTERFACE
+    ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
+    ${CMAKE_CURRENT_SOURCE_DIR}/Class/CDC/Inc
+)
+
+#-----------------------------------------------------------------
+
 # 静态库
 add_library(stm32_usb_device_lib STATIC)
 
@@ -10,7 +21,6 @@ target_link_libraries(stm32_usb_device_lib PRIVATE
 
 # 设置头文件目录
 target_include_directories(stm32_usb_device_lib PRIVATE
-    ${PROJECT_SOURCE_DIR}/Board/v3/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Core/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Class/CDC/Inc
 )

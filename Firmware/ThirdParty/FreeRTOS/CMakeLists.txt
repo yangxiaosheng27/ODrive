@@ -21,7 +21,6 @@ target_link_libraries(freertos_lib PRIVATE
 
 # 设置头文件目录
 target_include_directories(freertos_lib PRIVATE
-    ${PROJECT_SOURCE_DIR}/Board/v3/Inc
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/include
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/CMSIS_RTOS
     ${CMAKE_CURRENT_SOURCE_DIR}/Source/portable/GCC/ARM_CM4F
